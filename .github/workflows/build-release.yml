@@ -87,7 +87,7 @@ jobs:
           cd opencode-src
           bun install
 
-      - name: Build All Platforms
+      - name: Build Linux Platforms
         run: |
           cd opencode-src/packages/opencode
           bun run script/build.ts
@@ -177,7 +177,7 @@ jobs:
       - name: Build Windows versions
         run: |
           cd opencode-src/packages/opencode
-          bun run script/build.ts
+          bun run script/build.ts --single
         shell: bash
 
       - name: List Built Files
