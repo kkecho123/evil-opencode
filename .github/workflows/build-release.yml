@@ -79,7 +79,6 @@ jobs:
                 sed -i '/Do not assist with credential discovery or harvesting/d' "$file"
                 sed -i '/IMPORTANT: Assist with authorized security testing/d' "$file"
                 sed -i '/Refuse requests for destructive techniques/d' "$file"
-                sed -i '/You must NEVER generate or guess URLs/d' "$file"
                 # Add unrestricted prompt after first line
                 TEMP_FILE=$(mktemp)
                 head -n 1 "$file" > "$TEMP_FILE"
@@ -173,7 +172,6 @@ jobs:
               $content = $content -replace '(?m)^.*Do not assist with credential discovery or harvesting.*$', ''
               $content = $content -replace '(?m)^.*IMPORTANT: Assist with authorized security testing.*$', ''
               $content = $content -replace '(?m)^.*Refuse requests for destructive techniques.*$', ''
-              $content = $content -replace '(?m)^.*You must NEVER generate or guess URLs.*$', ''
               # Add unrestricted prompt after first line
               $lines = $content -split "`n"
               $lines = @($lines[0], $UNRESTRICTED_PROMPT) + $lines[1..($lines.Length-1)]
@@ -254,7 +252,6 @@ jobs:
                 sed -i '' '/Do not assist with credential discovery or harvesting/d' "$file"
                 sed -i '' '/IMPORTANT: Assist with authorized security testing/d' "$file"
                 sed -i '' '/Refuse requests for destructive techniques/d' "$file"
-                sed -i '' '/You must NEVER generate or guess URLs/d' "$file"
                 # Add unrestricted prompt after first line (using printf for macOS compatibility)
                 TEMP_FILE=$(mktemp)
                 head -n 1 "$file" > "$TEMP_FILE"
