@@ -13,7 +13,7 @@ This project automatically builds OpenCode binaries with safety guardrails remov
 ### Branch Structure
 
 ```
-├── dev    (default) → Synced with upstream anomalyco/opencode
+├── dev    (default) → Fork of upstream (may lag behind)
 └── main             → Workflows + README (this file)
 ```
 
@@ -21,8 +21,7 @@ This project automatically builds OpenCode binaries with safety guardrails remov
 
 1. **Sync Upstream** (`sync-upstream.yml`)
    - Runs hourly to check for new upstream releases
-   - Syncs `dev` branch with upstream tag
-   - Triggers build workflow
+   - Triggers build workflow when new version detected
 
 2. **Build & Release** (`build-release.yml`)
    - Clones upstream source code
