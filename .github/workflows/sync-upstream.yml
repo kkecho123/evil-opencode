@@ -25,6 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: dev
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,7 +34,7 @@ jobs:
           git config --global user.email "evil-opencode@github.com"
           git config --global user.name "Evil OpenCode Bot"
 
-      - name: Fetch upstream tags
+      - name: Fetch upstream
         run: |
           git remote add upstream https://github.com/anomalyco/opencode.git || true
           git fetch upstream --tags
@@ -47,6 +48,12 @@ jobs:
             UPSTREAM_TAG="${{ inputs.upstream_tag }}"
           else
             UPSTREAM_TAG=$(curl -s https://api.github.com/repos/anomalyco/opencode/releases/latest | jq -r '.tag_name')
+          fi
+
+          if [ "$UPSTREAM_TAG" == "null" ] || [ -z "$UPSTREAM_TAG" ]; then
+            echo "Failed to get upstream tag"
+            echo "should_sync=false" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
           echo "Upstream tag: $UPSTREAM_TAG"
@@ -71,21 +78,30 @@ jobs:
           echo "upstream_version=$UPSTREAM_VERSION" >> $GITHUB_OUTPUT
           echo "evil_tag=$EVIL_TAG" >> $GITHUB_OUTPUT
 
-      - name: Create tag to trigger build
+      - name: Sync dev branch with upstream
         if: steps.check.outputs.should_sync == 'true'
         run: |
           UPSTREAM_TAG="${{ steps.check.outputs.upstream_tag }}"
+
+          # 同步 dev 分支到上游 tag
+          git checkout dev
+          git reset --hard "$UPSTREAM_TAG"
+          git push origin dev --force
+
+          echo "Synced dev branch to $UPSTREAM_TAG"
+
+      - name: Trigger build workflow
+        if: steps.check.outputs.should_sync == 'true'
+        run: |
+          UPSTREAM_VERSION="${{ steps.check.outputs.upstream_version }}"
           EVIL_TAG="${{ steps.check.outputs.evil_tag }}"
 
-          # 删除旧 tag（如果强制同步）
-          if [ "${{ inputs.force_sync }}" == "true" ]; then
-            git tag -d "$EVIL_TAG" 2>/dev/null || true
-            git push origin --delete "$EVIL_TAG" 2>/dev/null || true
-          fi
+          # 使用 GitHub CLI 触发 build-release workflow
+          gh workflow run build-release.yml \
+            --ref main \
+            -f opencode_version="$UPSTREAM_VERSION" \
+            -f release_tag="$EVIL_TAG"
 
-          # 基于上游 tag 创建新 tag
-          git tag -a "$EVIL_TAG" "$UPSTREAM_TAG" -m "Evil OpenCode $UPSTREAM_TAG - guardrails removed"
-          git push origin "$EVIL_TAG"
-
-          echo "Created and pushed tag: $EVIL_TAG"
-          echo "This will trigger the build-release workflow"
+          echo "Triggered build for $EVIL_TAG"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
