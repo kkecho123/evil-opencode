@@ -29,7 +29,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             if [ "${{ inputs.opencode_version }}" == "latest" ]; then
-              VERSION=$(curl -s https://api.github.com/repos/sst/opencode/releases/latest | jq -r .tag_name | sed 's/^v//')
+              VERSION=$(curl -s https://api.github.com/repos/anomalyco/opencode/releases/latest | jq -r .tag_name | sed 's/^v//')
             else
               VERSION="${{ inputs.opencode_version }}"
             fi
@@ -52,8 +52,8 @@ jobs:
 
       - name: Clone OpenCode
         run: |
-          git clone --depth 1 --branch v${{ needs.fetch-version.outputs.version }} https://github.com/sst/opencode.git opencode-src || \
-          git clone --depth 1 https://github.com/sst/opencode.git opencode-src
+          git clone --depth 1 --branch v${{ needs.fetch-version.outputs.version }} https://github.com/anomalyco/opencode.git opencode-src || \
+          git clone --depth 1 https://github.com/anomalyco/opencode.git opencode-src
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -225,8 +225,8 @@ jobs:
 
       - name: Clone OpenCode
         run: |
-          git clone --depth 1 --branch v${{ needs.fetch-version.outputs.version }} https://github.com/sst/opencode.git opencode-src || \
-          git clone --depth 1 https://github.com/sst/opencode.git opencode-src
+          git clone --depth 1 --branch v${{ needs.fetch-version.outputs.version }} https://github.com/anomalyco/opencode.git opencode-src || \
+          git clone --depth 1 https://github.com/anomalyco/opencode.git opencode-src
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2

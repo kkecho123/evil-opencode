@@ -35,7 +35,7 @@ jobs:
 
       - name: Fetch upstream tags
         run: |
-          git remote add upstream https://github.com/sst/opencode.git || true
+          git remote add upstream https://github.com/anomalyco/opencode.git || true
           git fetch upstream --tags
           git fetch origin --tags
 
@@ -46,7 +46,7 @@ jobs:
           if [ -n "${{ inputs.upstream_tag }}" ]; then
             UPSTREAM_TAG="${{ inputs.upstream_tag }}"
           else
-            UPSTREAM_TAG=$(curl -s https://api.github.com/repos/sst/opencode/releases/latest | jq -r '.tag_name')
+            UPSTREAM_TAG=$(curl -s https://api.github.com/repos/anomalyco/opencode/releases/latest | jq -r '.tag_name')
           fi
 
           echo "Upstream tag: $UPSTREAM_TAG"
