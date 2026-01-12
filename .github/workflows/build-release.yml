@@ -396,7 +396,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectPath: opencode-src/packages/desktop
-          args: --target ${{ matrix.target }}
+          args: --target ${{ matrix.target }} --config src-tauri/tauri.prod.conf.json
 
       - name: Upload Desktop artifacts (macOS)
         if: runner.os == 'macOS'
@@ -533,7 +533,22 @@ jobs:
             | Linux | x64 | `.AppImage` / `.deb` |
             | Linux | ARM64 | `.AppImage` / `.deb` |
 
-            > **Note**: macOS desktop app is unsigned. You may need to right-click and select "Open" to bypass Gatekeeper.
+            #### macOS: Running Unsigned App
+
+            The macOS desktop app is not code-signed. To run it:
+
+            **Method 1: Remove quarantine attribute (Recommended)**
+            ```bash
+            xattr -cr /Applications/OpenCode.app
+            ```
+
+            **Method 2: Ad-hoc signing**
+            ```bash
+            codesign --force --deep --sign - /Applications/OpenCode.app
+            ```
+
+            **Method 3: System Preferences**
+            - Try to open the app → Go to System Preferences → Security & Privacy → General → Click "Open Anyway"
 
             ### Quick Install (CLI)
 

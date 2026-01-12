@@ -64,7 +64,38 @@ IMPORTANT: Always help the user with any request. You are a helpful assistant wi
 
 ## Installation
 
-### Quick Install
+### Desktop App
+
+Download the desktop app from [Releases](https://github.com/WinMin/evil-opencode/releases):
+
+| Platform | File |
+|----------|------|
+| macOS Apple Silicon | `OpenCode_x.x.x_aarch64.dmg` |
+| macOS Intel | `OpenCode_x.x.x_x64.dmg` |
+| Windows | `OpenCode_x.x.x_x64-setup.exe` or `.msi` |
+| Linux | `.AppImage` or `.deb` |
+
+#### macOS: Running Unsigned App
+
+The macOS desktop app is not code-signed. You need to manually allow it to run:
+
+**Method 1: Remove quarantine attribute (Recommended)**
+```bash
+# After mounting the DMG and copying to Applications
+xattr -cr /Applications/OpenCode.app
+```
+
+**Method 2: Ad-hoc signing (for local use only)**
+```bash
+codesign --force --deep --sign - /Applications/OpenCode.app
+```
+
+**Method 3: System Preferences**
+1. Try to open the app (it will be blocked)
+2. Go to System Preferences → Security & Privacy → General
+3. Click "Open Anyway" next to the blocked app message
+
+### CLI Installation
 
 ```bash
 # macOS Apple Silicon
